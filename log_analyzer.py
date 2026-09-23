@@ -1,45 +1,60 @@
 import re
+import json
 from collections import Counter
 from datetime import datetime
-LOG_FILE = "sample_logs.txt"
-FAILED_LOGIN_PATTERN = re.compile(
-    r"(?P<timestamp>\S+\s+\S+).*Failed login.*IP=(?P<ip>\d+\.\d+\.\d+\.\d+)",
-    re.IGNORECASE
-)
-def analyze_logs():
-    failed_attempts = []
-    ip_counter = Counter()
+CONFIG_FILE = "config.json"
+def load_config():
+    """Load monitoring settings from config.json."""
     try:
-        with open(LOG_FILE, "r", encoding="utf-8") as file:
+        with open(CONFIG_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {
+            "failed_attempt_threshold": 3,
+            "log_file": "sample_logs.txt",
+            "alert_enabled": True
+        }
+def analyze_logs():
+    config = load_config()
+    log_file = config.get("log_file", "sample_logs.txt")
+    threshold = config.get("failed_attempt_threshold", 3)
+    alert_enabled = config.get("alert_enabled", True)
+    failed_ips = []
+    total_events = 0
+    pattern = r"Failed login attempt IP=([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)"
+    try:
+        with open(log_file, "r", encoding="utf-8") as file:
             for line in file:
-                match = FAILED_LOGIN_PATTERN.search(line)
+                total_events += 1
+                match = re.search(pattern, line)
                 if match:
-                    timestamp = match.group("timestamp")
-                    ip_address = match.group("ip")
-                    failed_attempts.append(timestamp)
-                    ip_counter[ip_address] += 1
+                    failed_ips.append(match.group(1))
     except FileNotFoundError:
-        print(f"\n[ERROR] {LOG_FILE} not found.")
-        print("Create the sample_logs.txt file before running the analyzer.")
+        print(f"\nError: {log_file} was not found.")
         return
-    print("\n" + "=" * 55)
-    print("              LOGSHIELD - SECURITY ANALYZER")
-    print("=" * 55)
-    print(f"\nTotal failed login attempts : {len(failed_attempts)}")
-    print(f"Unique source IPs           : {len(ip_counter)}")
-    print("\n--- Suspicious IP Activity ---")
-    if not ip_counter:
-        print("No failed login activity detected.")
+    ip_counts = Counter(failed_ips)
+    print("\n" + "=" * 50)
+    print("              LOGSHIELD")
+    print("=" * 50)
+    print(f"Log file       : {log_file}")
+    print(f"Total events   : {total_events}")
+    print(f"Failed logins  : {len(failed_ips)}")
+    print(f"Alert threshold: {threshold}")
+    print("=" * 50)
+    if not ip_counts:
+        print("\nNo failed login attempts detected.")
         return
-    for ip, count in ip_counter.most_common():
-        if count >= 5:
-            risk = "HIGH"
-        elif count >= 3:
-            risk = "MEDIUM"
-        else:
-            risk = "LOW"
-        print(f"IP: {ip:<16} Attempts: {count:<3} Risk: {risk}")
-    print("\nAnalysis completed.")
-    print("=" * 55)
+    print("\nSuspicious Activity:")
+    for ip, count in ip_counts.items():
+        if count >= threshold:
+            risk = "HIGH" if count >= threshold + 2 else "MEDIUM"
+            print(f"\nIP Address : {ip}")
+            print(f"Attempts   : {count}")
+            print(f"Risk Level : {risk}")
+            if alert_enabled:
+                print("Alert      : Repeated failed login activity detected.")
+    print("\nAnalysis completed at:",
+          datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("=" * 50)
 if __name__ == "__main__":
     analyze_logs()
