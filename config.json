@@ -1,0 +1,5 @@
+{
+  "failed_attempt_threshold": 3,
+  "log_file": "sample_logs.txt",
+  "alert_enabled": true
+}
