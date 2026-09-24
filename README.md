@@ -210,10 +210,3 @@ This project is intended for educational and defensive security purposes.
 
 The detected activity is based on predefined log patterns and should not be treated as proof of malicious behaviour.
 
-## 👩‍💻 Author
-
-**Nithya Shree R V**
-
-Cyber Security Student
-
-GitHub: https://github.com/nithyashree-24
