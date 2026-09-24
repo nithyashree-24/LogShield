@@ -30,6 +30,12 @@ The tool processes log entries, extracts relevant information, counts failed log
 - Collections (`Counter`)
 - Date and Time Handling (`datetime`)
 
+## 📦 Requirements
+
+- Python 3.x
+- No external Python packages required
+- Uses only Python standard library modules
+
 ## 📁 Project Structure
 
 ```text
@@ -157,6 +163,7 @@ Make sure the following files are present in the project folder:
 config.json
 sample_logs.txt
 log_analyzer.py
+requirements.txt
 ```
 
 The analyzer reads the configured log file and applies the threshold specified in `config.json`.
