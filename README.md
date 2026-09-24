@@ -1,35 +1,58 @@
-🛡️ LogShield
+# 🛡️ LogShield
 
 A lightweight Python security log analyzer for detecting suspicious authentication activity.
 
-🛡️ Overview
+## 🛡️ Overview
 
 LogShield analyzes authentication logs and identifies repeated failed login attempts that may indicate suspicious activity.
 
-The tool processes log entries, extracts relevant information, and highlights IP addresses associated with multiple failed login attempts.
+The tool processes log entries, extracts relevant information, counts failed login attempts, and highlights IP addresses associated with repeated authentication failures.
 
-✨ Features
+## ✨ Features
 
 - 🔐 Failed login attempt detection
 - 🌐 IP address extraction
 - 📊 Failed attempt counting
 - ⚠️ Suspicious activity identification
+- 🎯 Risk level classification
+- 🚨 Configurable alerting
+- ⚙️ JSON-based configuration
 - 📄 Simple text-based log analysis
-- ⚙️ Configurable monitoring settings
 - 🧩 Lightweight and easy to extend
 
-🧰 Technologies Used
+## 🧰 Technologies Used
 
 - Python
-- Regular Expressions ("re")
+- Regular Expressions (`re`)
+- JSON (`json`)
 - File Handling
 - String Processing
-- JSON Configuration
-- Data Structures
+- Collections (`Counter`)
+- Date and Time Handling (`datetime`)
 
-⚙️ Configuration
+## 📁 Project Structure
 
-LogShield supports configurable monitoring settings through the "config.json" file.
+```text
+LogShield/
+│
+├── log_analyzer.py
+├── config.json
+├── sample_logs.txt
+└── README.md
+```
+
+### 📄 File Description
+
+| File | Description |
+|---|---|
+| `log_analyzer.py` | Main Python security log analyzer |
+| `config.json` | Configurable monitoring settings |
+| `sample_logs.txt` | Sample authentication log data |
+| `README.md` | Project documentation |
+
+## ⚙️ Configuration
+
+LogShield supports configurable monitoring settings through the `config.json` file.
 
 The configuration file allows users to customize:
 
@@ -39,33 +62,38 @@ The configuration file allows users to customize:
 
 Example:
 
+```json
 {
     "failed_attempt_threshold": 3,
     "log_file": "sample_logs.txt",
     "alert_enabled": true
 }
+```
 
-⚙️ Configuration Options
+### ⚙️ Configuration Options
 
-Setting| Description
-"failed_attempt_threshold"| Number of failed attempts required before an IP is flagged
-"log_file"| Authentication log file to analyze
-"alert_enabled"| Enables or disables suspicious activity alerts
+| Setting | Description |
+|---|---|
+| `failed_attempt_threshold` | Number of failed attempts required before an IP is flagged |
+| `log_file` | Authentication log file to analyze |
+| `alert_enabled` | Enables or disables suspicious activity alerts |
 
-🔍 Monitoring Process
+## 🔍 Monitoring Process
 
 LogShield follows a simple analysis workflow:
 
 1. Reads the authentication log file.
-2. Loads monitoring settings from "config.json".
+2. Loads monitoring settings from `config.json`.
 3. Identifies successful and failed login attempts.
 4. Extracts IP addresses from log entries.
 5. Counts failed attempts for each IP address.
 6. Compares failed attempts against the configured threshold.
-7. Flags IP addresses with repeated failed attempts.
-8. Displays the analysis results.
+7. Assigns a risk level based on failed attempts.
+8. Flags IP addresses with repeated failed attempts.
+9. Generates security alerts when alerting is enabled.
+10. Displays the analysis results.
 
-📄 Event Logging
+## 📄 Event Logging
 
 The analyzer processes authentication events and identifies relevant security activity from the log file.
 
@@ -75,55 +103,117 @@ Each analyzed event may contain:
 - Login status
 - Source IP address
 - Failed attempt count
+- Risk level
 - Suspicious activity status
 
-🚀 How to Run
+## 📊 Risk Classification
 
-📥 Clone Repository
+LogShield assigns a basic risk level based on the number of failed login attempts.
 
+| Condition | Risk Level |
+|---|---|
+| Failed attempts below threshold | No Alert |
+| Failed attempts reach threshold | MEDIUM |
+| Failed attempts exceed threshold significantly | HIGH |
+
+The risk classification is intended for basic security monitoring and demonstration purposes.
+
+## 📊 Sample Output
+
+```text
+IP Address : 192.168.1.10
+Attempts   : 5
+Risk Level : HIGH
+Alert      : Repeated failed login activity detected.
+
+IP Address : 10.0.0.15
+Attempts   : 3
+Risk Level : MEDIUM
+Alert      : Repeated failed login activity detected.
+
+Analysis completed successfully.
+```
+
+## 🚀 How to Run
+
+### 📥 Clone Repository
+
+```bash
 git clone https://github.com/nithyashree-24/LogShield.git
 cd LogShield
+```
 
-▶️ Run the Analyzer
+### ▶️ Run the Analyzer
 
+```bash
 python log_analyzer.py
+```
 
-📄 Analyze the Sample Log
+### 📄 Analyze the Sample Log
 
-Make sure "sample_logs.txt" and "config.json" are present in the project folder before running the analyzer.
+Make sure the following files are present in the project folder:
 
-The analyzer reads the configured log file and applies the threshold specified in "config.json".
+```text
+config.json
+sample_logs.txt
+log_analyzer.py
+```
 
-🎯 Project Objective
+The analyzer reads the configured log file and applies the threshold specified in `config.json`.
 
-The objective of LogShield is to demonstrate a basic security log analysis technique using Python.The project focuses on detecting repeated authentication failures and identifying potentially suspicious source IP addresses through configurable monitoring rules.
+## 🧪 Testing
 
-🔮 Future Enhancements
+LogShield was tested using sample authentication logs containing:
 
-- 🔹 Real-Time Log Monitoring
-  
+- Successful login attempts
+- Repeated failed login attempts
+- Multiple source IP addresses
+- Different failed-attempt counts
+
+The analyzer successfully identified repeated failed login activity and generated corresponding risk levels and alerts.
+
+## 🎯 Project Objective
+
+The objective of LogShield is to demonstrate a basic security log analysis technique using Python.
+
+The project focuses on detecting repeated authentication failures, identifying potentially suspicious source IP addresses, and generating basic security alerts through configurable monitoring rules.
+
+## 🔮 Future Enhancements
+
+- 🔹 **Real-Time Log Monitoring**
+
   Monitor authentication logs continuously and detect suspicious activity as it occurs.
 
-- 🔹 IP Reputation Checking
-  
+- 🔹 **IP Reputation Checking**
+
   Integrate external threat-intelligence sources to check suspicious IP addresses.
 
-- 🔹 Automated Alerting
-  
-  Generate security alerts when repeated failed login attempts are detected.
+- 🔹 **Automated Alerting**
 
-- 🔹 Advanced Detection Rules
-  
-  Detect brute-force patterns, unusual login times, and repeated authentication failures.
+  Generate security alerts through email, notifications, or security monitoring platforms.
 
-- 🔹 Security Dashboard
-  
-  Build a graphical dashboard for visualizing login activity, suspicious IPs, and security events.
+- 🔹 **Advanced Detection Rules**
 
-⚠️ Security Note
+  Detect brute-force patterns, unusual login times, repeated authentication failures, and abnormal login behaviour.
+
+- 🔹 **Security Dashboard**
+
+  Build a graphical dashboard for visualizing login activity, suspicious IPs, risk levels, and security events.
+
+- 🔹 **Log Export**
+
+  Export analysis results into CSV or JSON formats for further investigation.
+
+## ⚠️ Security Note
 
 This project is intended for educational and defensive security purposes.
 
 The detected activity is based on predefined log patterns and should not be treated as proof of malicious behaviour.
 
+## 👩‍💻 Author
 
+**Nithya Shree R V**
+
+Cyber Security Student
+
+GitHub: https://github.com/nithyashree-24
